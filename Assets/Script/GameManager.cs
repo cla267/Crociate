@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public Button rightSlide;
     public float speed = 0.2f;
     public TextMeshProUGUI Title;
+    public GameObject Timeline;
     
     int currentIndex = 0;
     int currentSlide = 0;
@@ -25,7 +26,7 @@ public class GameManager : MonoBehaviour
     {
         images = new GameObject[ImageHolder.transform.childCount];
         slides = new GameObject[SlidesHolder.transform.childCount];
-        for(int i = 0; i < images.Length; i++) images[i] = ImageHolder.transform.GetChild(i).gameObject;
+        for(int i = 0; i < images.Length; i++) {images[i] = ImageHolder.transform.GetChild(i).gameObject; Timeline.transform.GetChild(i).gameObject.SetActive(false);}
         for(int i = 0; i < slides.Length-1; i++) {slides[i] = SlidesHolder.transform.GetChild(i).gameObject; slides[i].SetActive(false);}
         Elements = SlidesHolder.transform.GetChild(SlidesHolder.transform.childCount-1).gameObject;
         Elements.SetActive(false);
@@ -35,6 +36,11 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         Title.text = images[currentIndex].name;
+        for(int i = 0; i < images.Length; i++)
+        {
+            if(i != currentIndex) Timeline.transform.GetChild(i).gameObject.SetActive(false);
+            else Timeline.transform.GetChild(i).gameObject.SetActive(true);
+        }
     }
 
     public void Open()
@@ -49,6 +55,7 @@ public class GameManager : MonoBehaviour
     {
         Elements.SetActive(false);
         slides[currentIndex].SetActive(false);
+        slides[currentIndex].transform.GetChild(currentSlide).gameObject.SetActive(false);
         rightSlide.interactable = true;
     }
     public void Left()
@@ -56,7 +63,7 @@ public class GameManager : MonoBehaviour
         currentSlide--;
         slides[currentIndex].transform.GetChild(currentSlide+1).gameObject.SetActive(false);
         slides[currentIndex].transform.GetChild(currentSlide).gameObject.SetActive(true);
-        if(currentSlide == 0) leftArrow.interactable = false;
+        if(currentSlide == 0) leftSlide.interactable = false;
         rightSlide.interactable = true;
     }
     public void Right()
